@@ -1,12 +1,13 @@
 import { Switch, Route } from 'react-router-dom'
 import Inicio from '../vistas/Inicio'
+import Monedas from '../vistas/Monedas';
 
 
 const Rutas = () => {
     return (
         <Switch>
-            <Route path='/' component={Inicio} />
-
+            <Route exact path='/' component={Inicio} />
+            <Route exact path='/monedas' component={Monedas} />
         </Switch>
     )
 }

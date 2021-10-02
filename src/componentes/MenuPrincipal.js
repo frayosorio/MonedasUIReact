@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Button, IconButton, Box, Drawer, Typography, List, ListItem, ListItemText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import ModalLogin from './login/Login'
 
@@ -25,6 +26,7 @@ const obtenerUsuarioLogueado = () => {
 
 
 const MenuPrincipal = () => {
+    const estilos = obtenerEstilos();
 
     //manejo del estado de usuario logueado
     const [usuarioLogueado, setUsuarioLogueado] = useState(obtenerUsuarioLogueado);
@@ -42,15 +44,57 @@ const MenuPrincipal = () => {
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
 
+    //manejo del estado del menú
+    const [estadoMenu, setEstadoMenu] = useState(false);
+
+    //rutina que dactiva el despliegue del menú
+    const mostrarMenu = (estado) => () => {
+        setEstadoMenu(estado);
+    }
+
     //rutina que realiza la salida del usuario
     const salir = () => {
         sessionStorage.removeItem("usuarioLogueado");
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
 
+    const menu = () => (
+        <Box
+            sx={{ width: 300 }}
+            role="presentation"
+            onClick={mostrarMenu(false)}
+        >
+            <List>
+                {
+                    ['Monedas', 'Paises', 'Cambios'].map((texto, indice) => (
+                        <ListItem button component="a" href={`/${texto}`}>
+                            <img src={require(`../assets/iconos/${texto}.png`).default} />
+                            <ListItemText primary={texto} />
+                        </ListItem>
+                    )
+                    )
+                }
+
+            </List>
+        </Box>
+    )
+
     return (
-        <AppBar>
+        <AppBar position="static">
             <Toolbar>
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria_label="Menu Principal"
+                    className={estilos.botonMenu}
+                    onClick={mostrarMenu(true)}
+                >
+                    <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" className={estilos.titulo}>
+                    Monedas del Mundo
+                </Typography>
+
                 <span>
                     {usuarioLogueado ? usuarioLogueado.nombre : ""}
                 </span>
@@ -66,6 +110,13 @@ const MenuPrincipal = () => {
                 )}
             </Toolbar>
             <ModalLogin open={estadoModal} cerrar={cerrarModal} />
+            <Drawer
+                anchor="left"
+                open={estadoMenu}
+                onClose={mostrarMenu(false)}
+            >
+                {menu()}
+            </Drawer>
         </AppBar>
     )
 
