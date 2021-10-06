@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import ModalEditar from '../componentes/EditarMoneda/Modal';
+import Confirmacion from '../componentes/Conformacion';
 
 const columnas = [
     { field: "id", headerName: "ID", width: 100 },
@@ -53,6 +54,8 @@ const Monedas = () => {
 
     const [estadoModal, setEstadoModal] = useState(false);
 
+    const [estadoConfirmacion, setEstadoConfirmacion] = useState(false);
+
     const [monedaEditada, setMonedaEditada] = useState({});
 
     const obtenerMonedas = () => {
@@ -90,10 +93,52 @@ const Monedas = () => {
     }
 
     const modificar = () => {
-        const monedaE = monedaSeleccionada;
-        setMonedaEditada(monedaE);
+        if (monedaSeleccionada) {
+            const monedaE = monedaSeleccionada;
+            setMonedaEditada(monedaE);
+            setEstadoModal(true);
+        }
+        else {
+            window.alert("Por favor seleccione la moneda a editar");
+        }
+    }
 
-        setEstadoModal(true);
+    const eliminar = () => {
+        if (monedaSeleccionada) {
+            const monedaE = monedaSeleccionada;
+            setMonedaEditada(monedaE);
+            setEstadoConfirmacion(true);
+        }
+        else {
+            window.alert("Por favor seleccione la moneda a eliminar");
+        }
+    }
+
+    const confirmarEliminacion = () => {
+
+        fetch(`http://localhost:3010/monedas/${monedaEditada.id}`,
+            {
+                method: 'delete',
+            }
+        ).
+            then((res) => {
+                if (res.status != 200) {
+                    throw Error(res.statusText);
+                }
+                return res.json();
+            }).
+            then((json) => {
+                window.alert(json.message);
+                setEstadoListado(true);
+            }).
+
+            catch(function (error) {
+                window.alert(`error eliminando moneda [${error}]`);
+            });
+    }
+
+    const cerrarConfirmacion = () => {
+        setEstadoConfirmacion(false);
     }
 
     var monedaSeleccionada;
@@ -112,7 +157,7 @@ const Monedas = () => {
                 <Button className={estilos.botonModificar} onClick={modificar}>
                     Modificar
                 </Button>
-                <Button className={estilos.botonEliminar}>
+                <Button className={estilos.botonEliminar} onClick={eliminar}>
                     Eliminar
                 </Button>
                 <DataGrid
@@ -134,6 +179,13 @@ const Monedas = () => {
                 />
 
                 <ModalEditar open={estadoModal} cerrar={cerrarModal} moneda={monedaEditada} />
+
+                <Confirmacion open={estadoConfirmacion}
+                    titulo={"Eliminando una moneda"}
+                    mensaje={"Está seguro?"}
+                    cerrar={cerrarConfirmacion}
+                    aceptar={confirmarEliminacion}
+                />
             </div>
         </div>
     )
