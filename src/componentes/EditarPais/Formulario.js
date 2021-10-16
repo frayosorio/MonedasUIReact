@@ -3,18 +3,18 @@ import React, { useState } from 'react';
 import { obtenerEstilosModal } from '../../servicios/Listas';
 
 
-const Formulario = ({ cerrarFormulario, monedaEditada }) => {
+const Formulario = ({ cerrarFormulario, paisEditado }) => {
 
     const estilos = obtenerEstilosModal();
 
-    const [moneda, setMoneda] = useState(monedaEditada.moneda);
-    const [sigla, setSigla] = useState(monedaEditada.sigla);
-    const [simbolo, setSimbolo] = useState(monedaEditada.simbolo);
-    const [emisor, setEmisor] = useState(monedaEditada.emisor);
+    const [pais, setPais] = useState(paisEditado.pais);
+    const [codigoAlfa2, setCodigoAlfa2] = useState(paisEditado.codigoAlfa2);
+    const [codigoAlfa3, setCodigoAlfa3] = useState(paisEditado.codigoAlfa3);
+    const [moneda, setMoneda] = useState(paisEditado.moneda);
 
     const guardar = (e) => {
 
-        fetch("http://localhost:3010/monedas",
+        fetch("http://localhost:3010/paises",
             {
                 method: 'post',
                 headers: {
@@ -22,11 +22,11 @@ const Formulario = ({ cerrarFormulario, monedaEditada }) => {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    Id: monedaEditada.id,
-                    Moneda: moneda,
-                    Sigla: sigla,
-                    Simbolo: simbolo,
-                    Emisor: emisor
+                    Id: paisEditado.id,
+                    Pais: pais,
+                    CodigoAlfa2: codigoAlfa2,
+                    CodigoAlfa3: codigoAlfa3,
+                    //Emisor: emisor
                 })
             }
         ).
@@ -43,32 +43,32 @@ const Formulario = ({ cerrarFormulario, monedaEditada }) => {
     return (
         <form className={estilos.root} onSubmit={guardar}>
             <TextField
-                label="Nombre de la moneda"
+                label="Nombre del país"
+                variant="filled"
+                required
+                value={pais}
+                onChange={(e) => { setPais(e.target.value) }}
+            />
+            <TextField
+                label="Código Alfa 2"
+                variant="filled"
+                required
+                value={codigoAlfa2}
+                onChange={(e) => { setCodigoAlfa2(e.target.value) }}
+            />
+            <TextField
+                label="Código Alfa 23"
+                variant="filled"
+                required
+                value={codigoAlfa3}
+                onChange={(e) => { setCodigoAlfa3(e.target.value) }}
+            />
+            <TextField
+                label="Moneda"
                 variant="filled"
                 required
                 value={moneda}
                 onChange={(e) => { setMoneda(e.target.value) }}
-            />
-            <TextField
-                label="Sigla"
-                variant="filled"
-                required
-                value={sigla}
-                onChange={(e) => { setSigla(e.target.value) }}
-            />
-            <TextField
-                label="Símbolo"
-                variant="filled"
-                required
-                value={simbolo}
-                onChange={(e) => { setSimbolo(e.target.value) }}
-            />
-            <TextField
-                label="Entidad Emisora"
-                variant="filled"
-                required
-                value={emisor}
-                onChange={(e) => { setEmisor(e.target.value) }}
             />
             <div>
                 <Button variant="contained" onClick={cerrarFormulario}>

@@ -1,25 +1,7 @@
 import { TextField, Button } from "@material-ui/core";
 import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-
-
-const obtenerEstilos = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: theme.spacing(2),
-
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: '300px',
-        },
-        '& .MuiButtonBase-root': {
-            margin: theme.spacing(2),
-        },
-    },
-}));
+import { obtenerEstilosModal } from '../../servicios/Listas';
 
 
 const Formulario = ({ cerrarFormulario }) => {
@@ -59,7 +41,7 @@ const Formulario = ({ cerrarFormulario }) => {
 
     }
 
-    const estilos = obtenerEstilos();
+    const estilos = obtenerEstilosModal();
 
     return (
         <form className={estilos.root} onSubmit={enviarFormulario}>
